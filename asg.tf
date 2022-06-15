@@ -43,7 +43,7 @@ resource "aws_security_group" "ec2-sg" {
 resource "aws_launch_configuration" "lc" {
   name_prefix   = "test_ecs"
   image_id      = data.aws_ami.amazon_linux.id
-  instance_type = "t2.micro"
+  instance_type = "t3.micro"
   lifecycle {
     create_before_destroy = true
   }
@@ -55,15 +55,22 @@ resource "aws_launch_configuration" "lc" {
 #! /bin/bash
 sudo apt-get update
 sudo echo "ECS_CLUSTER=${var.cluster_name}" >> /etc/ecs/ecs.config
+sudo yum install -y wget
+sudo wget https://bootstrap.pypa.io/pip/3.6/get-pip.py -O ./get-pip.py
+python3 get-pip.py
+sudo pip3 install botocore
+sudo yum install -y amazon-efs-utils
+sudo mkdir -p /data/db
+sudo mount -t efs -o tls fs-02cb949ac2d14929e:/ /data/db
 EOF
 }
 
 resource "aws_autoscaling_group" "asg" {
-  name                      = "test-asg"
-  launch_configuration      = aws_launch_configuration.lc.name
-  min_size                  = 1
-  max_size                  = 2
-  desired_capacity          = 1
+  name_prefix                      = "test-asg"
+  launch_configuration      = aws_launch_configuration.nona_lc.name
+  min_size                  = 0
+  max_size                  = 0
+  desired_capacity          = 0
   health_check_type         = "ELB"
   health_check_grace_period = 300
   vpc_zone_identifier       = module.vpc.public_subnets
@@ -89,22 +96,23 @@ resource "aws_launch_configuration" "nona_lc" {
   user_data                   = <<EOF
 #! /bin/bash
 sudo apt-get update
-echo ECS_CLUSTER=nona-research-foundation >> /etc/ecs/ecs.config
-
-# install the Docker volume plugin
-docker plugin install rexray/ebs REXRAY_PREEMPT=true EBS_REGION=us-east-1 --grant-all-permissions
-
-# restart the ECS agent
-sudo systemctl restart ecs
+sudo echo "ECS_CLUSTER=${var.cluster_name}" >> /etc/ecs/ecs.config
+sudo yum install -y wget
+sudo wget https://bootstrap.pypa.io/pip/3.6/get-pip.py -O ./get-pip.py
+python3 get-pip.py
+sudo pip3 install botocore
+sudo yum install -y amazon-efs-utils
+sudo mkdir -p /data/db
+sudo mount -t efs -o tls fs-02cb949ac2d14929e:/ /data/db
 EOF
 }
 
 resource "aws_autoscaling_group" "nona_asg" {
   name                      = "nona-asg"
-  launch_configuration      = aws_launch_configuration.lc.name
+  launch_configuration      = aws_launch_configuration.nona_lc.name
   min_size                  = 3
-  max_size                  = 3
-  desired_capacity          = 3
+  max_size                  = 4
+  desired_capacity          = 4
   health_check_type         = "ELB"
   health_check_grace_period = 300
   vpc_zone_identifier       = module.vpc.public_subnets
