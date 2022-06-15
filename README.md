@@ -10,6 +10,7 @@ An overview can be found on Youtube of the above infrastructure [here](https://y
 ## Prerequisites
 Create SSH Keys in AWS (pem files to access servers)
 Install Terraform
+Install the AWS CLI
 Create appropriate roles to access AWS rresources
 ## How to create the infrastructure?
 This example implies that you have already AWS account and Terraform CLI installed.
@@ -49,3 +50,4 @@ In file `iam.tf` we create roles, which will help us to associate EC2 instances 
 
 In file `alb.tf` we create Application Load Balancer with target groups, security group and listener. 
 
+TODO: Setup EFS mount incoming security group to be the ECS cluster security group

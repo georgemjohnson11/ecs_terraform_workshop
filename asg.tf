@@ -61,7 +61,9 @@ python3 get-pip.py
 sudo pip3 install botocore
 sudo yum install -y amazon-efs-utils
 sudo mkdir -p /data/db
-sudo mount -t efs -o tls fs-02cb949ac2d14929e:/ /data/db
+sudo mount -t efs -o tls,accesspoint=fsap-0260936da5df77892 fs-02cb949ac2d14929e:/ /data/db
+sudo mount -t efs -o tls,accesspoint=fsap-07594c8a2608fff96 fs-02cb949ac2d14929e:/ /root
+
 EOF
 }
 
@@ -103,7 +105,9 @@ python3 get-pip.py
 sudo pip3 install botocore
 sudo yum install -y amazon-efs-utils
 sudo mkdir -p /data/db
-sudo mount -t efs -o tls fs-02cb949ac2d14929e:/ /data/db
+sudo mount -t efs -o tls,accesspoint=fsap-0260936da5df77892 fs-02cb949ac2d14929e:/ /data/db
+sudo mount -t efs -o tls,accesspoint=fsap-07594c8a2608fff96 fs-02cb949ac2d14929e:/ /root
+
 EOF
 }
 
