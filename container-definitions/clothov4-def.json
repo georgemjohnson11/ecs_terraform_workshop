@@ -23,6 +23,16 @@
           "containerPort": 27016
         }
       ],
+      "mountPoints": [
+        {
+          "sourceVolume": "clothov4-storage",
+          "containerPath": "/data/db"
+        },
+        {
+          "sourceVolume": "clothov4-storage",
+          "containerPath": "/root/resources"
+        }
+      ],
       "logConfiguration": {
         "logDriver": "awslogs",
         "options": { 

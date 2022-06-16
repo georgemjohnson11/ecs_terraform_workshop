@@ -10,6 +10,16 @@
           "containerPort": 8080
         }
       ],
+      "mountPoints": [
+        {
+          "sourceVolume": "cellov1-storage",
+          "containerPath": "/root/resources"
+        },
+        {
+          "sourceVolume": "cellov1-storage",
+          "containerPath": "/root/cello_results"
+        }
+      ],
       "logConfiguration": {
         "logDriver": "awslogs",
         "options": { 

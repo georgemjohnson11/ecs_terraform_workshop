@@ -63,7 +63,8 @@ sudo yum install -y amazon-efs-utils
 sudo mkdir -p /data/db
 sudo mount -t efs -o tls,accesspoint=fsap-0260936da5df77892 fs-02cb949ac2d14929e:/ /data/db
 sudo mount -t efs -o tls,accesspoint=fsap-07594c8a2608fff96 fs-02cb949ac2d14929e:/ /root
-
+sudo mount -t efs -o tls,accesspoint=fsap-07dbf8f712d763bee fs-07755a29a495cc8ca:/ /root/resources
+sudo mount -t efs -o tls,accesspoint=fsap-0988340d8fd1ccaf5 fs-07755a29a495cc8ca:/ /root/cello_results
 EOF
 }
 
@@ -107,7 +108,8 @@ sudo yum install -y amazon-efs-utils
 sudo mkdir -p /data/db
 sudo mount -t efs -o tls,accesspoint=fsap-0260936da5df77892 fs-02cb949ac2d14929e:/ /data/db
 sudo mount -t efs -o tls,accesspoint=fsap-07594c8a2608fff96 fs-02cb949ac2d14929e:/ /root
-
+sudo mount -t efs -o tls,accesspoint=fsap-07dbf8f712d763bee fs-07755a29a495cc8ca:/ /root/resources
+sudo mount -t efs -o tls,accesspoint=fsap-0988340d8fd1ccaf5 fs-07755a29a495cc8ca:/ /root/cello_results
 EOF
 }
 
@@ -115,7 +117,7 @@ resource "aws_autoscaling_group" "nona_asg" {
   name                      = "nona-asg"
   launch_configuration      = aws_launch_configuration.nona_lc.name
   min_size                  = 3
-  max_size                  = 4
+  max_size                  = 5
   desired_capacity          = 4
   health_check_type         = "ELB"
   health_check_grace_period = 300

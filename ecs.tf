@@ -235,6 +235,13 @@ resource "aws_cloudwatch_log_group" "minieugene_log_group" {
 resource "aws_ecs_task_definition" "task-definition-cellov1" {
   family                = "cellov1"
   container_definitions = file("container-definitions/cellov1-def.json")
+  volume {
+    name      = "cellov1-storage"
+    efs_volume_configuration {
+      file_system_id = aws_efs_file_system.cellov1_storage.id
+      root_directory = "/"
+    }
+  }
   network_mode          = "bridge"
   tags = {
     "env"       = "prod"
@@ -324,6 +331,13 @@ resource "aws_cloudwatch_log_group" "cellov2_log_group" {
 resource "aws_ecs_task_definition" "task-definition-clothov4" {
   family                = "clothov4"
   container_definitions = file("container-definitions/clothov4-def.json")
+  volume {
+    name      = "clothov4-storage"
+    efs_volume_configuration {
+      file_system_id = aws_efs_file_system.clothov4_storage.id
+      root_directory = "/"
+    }
+  }
   network_mode          = "bridge"
   tags = {
     "env"       = "prod"
