@@ -1,31 +1,31 @@
 [
-    {
-      "name": "cellov1-container",
-      "image": "464116869262.dkr.ecr.us-east-1.amazonaws.com/cellov1:latest",
-      "cpu": 250,
-      "memory": 450,
-      "essential": true,
-      "portMappings": [
-        {
-          "containerPort": 8080
-        }
-      ],
-      "mountPoints": [
-        {
-          "sourceVolume": "cellov1-storage",
-          "containerPath": "/root/resources"
-        },
-        {
-          "sourceVolume": "cellov1-storage",
-          "containerPath": "/root/cello_results"
-        }
-      ],
-      "logConfiguration": {
-        "logDriver": "awslogs",
-        "options": { 
-          "awslogs-group" : "/ecs/cellov1-container",
-          "awslogs-region": "us-east-1"
-        }
+  {
+    "name": "cellov1-container",
+    "image": "464116869262.dkr.ecr.us-east-1.amazonaws.com/cellov1:latest",
+    "cpu": 200,
+    "memory": 650,
+    "essential": true,
+    "portMappings": [
+      {
+        "containerPort": 8080
+      }
+    ],
+    "mountPoints": [
+      {
+        "sourceVolume": "cellov1-storage",
+        "containerPath": "/root/resources"
+      },
+      {
+        "sourceVolume": "cellov1-storage",
+        "containerPath": "/root/cello_results"
+      }
+    ],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "/ecs/cellov1-container",
+        "awslogs-region": "us-east-1"
       }
     }
+  }
 ]
