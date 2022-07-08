@@ -2,8 +2,8 @@
   {
     "name": "cellov1-container",
     "image": "464116869262.dkr.ecr.us-east-1.amazonaws.com/cellov1:latest",
-    "cpu": 200,
-    "memory": 650,
+    "cpu": 500,
+    "memory": 800,
     "essential": true,
     "portMappings": [
       {

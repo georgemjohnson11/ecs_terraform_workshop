@@ -1,11 +1,14 @@
-# Provisioning VPC, ECS and ALB using Terraform
+# Provisioning VPC, ECS, EFS, and ALB using Terraform
 
-![](https://github.com/mashun4ek/ecs_terraform_workshop/workflows/Terraform/badge.svg)
 
-This is the example of creating a simple infrastructure using Terraform and AWS cloud provider. It consists of:
+This is the example of creating an open source infrastructure using Terraform and AWS cloud provider. It consists of:
 - Virtual Private Cloud (VPC) with 3 public subnets in 3 availability zones
 - Elastic Container Service (ECS)
+- Elastic Container Registry (ECR)
 - Application Load Balancer (ALB)
+- Elastic File System (EFS)
+
+
 An overview can be found on Youtube of the above infrastructure [here](https://youtu.be/Ky7sph6fBtM?t=881)
 ## Prerequisites
 Create SSH Keys in AWS (pem files to access servers)
@@ -13,12 +16,12 @@ Install Terraform
 Install the AWS CLI
 Create appropriate roles to access AWS rresources
 ## How to create the infrastructure?
-This example implies that you have already AWS account and Terraform CLI installed.
-1. `git clone https://github.com/mashun4ek/ecs_terraform_workshop.git`
-2. cd ecs_terraform_workshop
-3. terraform init
-4. terraform plan
-5. terraform apply
+This example implies that you have already AWS account and [Terraform CLI](https://www.terraform.io/downloads) installed.
+1. `git clone https://github.com/NonaSoftware/terraform_ecs_infrastructure.git`
+2. `cd terraform_ecs_infrastructure`
+3. `terraform init`
+4. `terraform plan`
+5. `terraform apply`
 
 Note: it can take about 5 minutes to provision all resources.
 ## How to delete the infrastructure?
