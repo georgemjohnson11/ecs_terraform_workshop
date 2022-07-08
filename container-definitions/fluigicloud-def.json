@@ -1,0 +1,21 @@
+[
+    {
+      "name": "fluigicloud-container",
+      "image": "464116869262.dkr.ecr.us-east-1.amazonaws.com/fluigicloud:latest",
+      "cpu": 20,
+      "memory": 512,
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 8080
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": { 
+          "awslogs-group" : "/ecs/fluigicloud-container",
+          "awslogs-region": "us-east-1"
+        }
+      }
+    }
+]

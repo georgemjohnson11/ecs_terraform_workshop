@@ -5,7 +5,7 @@ resource "aws_ecr_repository" "app_repo" {
     scan_on_push = true
   }
   tags = {
-    "env"       = "dev"
+    "env"       = "prod"
     "createdBy" = "mkerimova"
   }
 }

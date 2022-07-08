@@ -1,0 +1,21 @@
+[
+    {
+      "name": "fpselection-container",
+      "image": "464116869262.dkr.ecr.us-east-1.amazonaws.com/fpselection:latest",
+      "cpu": 40,
+      "memory": 300,
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 8080
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": { 
+          "awslogs-group" : "/ecs/fpselection-container",
+          "awslogs-region": "us-east-1"
+        }
+      }
+    }
+]

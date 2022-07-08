@@ -1,0 +1,21 @@
+[
+    {
+      "name": "clothov3-container",
+      "image": "464116869262.dkr.ecr.us-east-1.amazonaws.com/clothov3:latest",
+      "cpu": 20,
+      "memory": 512,
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 8443
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": { 
+          "awslogs-group" : "/ecs/clothov3-container",
+          "awslogs-region": "us-east-1"
+        }
+      }
+    }
+]
