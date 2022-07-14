@@ -68,6 +68,7 @@ sudo mount -t efs -o tls,accesspoint=fsap-0260936da5df77892 fs-02cb949ac2d14929e
 sudo mount -t efs -o tls,accesspoint=fsap-07594c8a2608fff96 fs-02cb949ac2d14929e:/ /root
 sudo mount -t efs -o tls,accesspoint=fsap-07dbf8f712d763bee fs-07755a29a495cc8ca:/ /root/resources
 sudo mount -t efs -o tls,accesspoint=fsap-0988340d8fd1ccaf5 fs-07755a29a495cc8ca:/ /root/cello_results
+sudo mount -t efs -o tls,accesspoint=fsap-0764256c9ff5c4390 fs-076aa12fcc92c9066:/ /data
 EOF
 }
 
@@ -91,7 +92,7 @@ resource "aws_autoscaling_group" "asg" {
 resource "aws_launch_configuration" "nona_lc" {
   name_prefix   = "nona_ecs"
   image_id      = data.aws_ami.amazon_linux.id
-  instance_type = "t3.micro"
+  instance_type = "t3.medium"
   lifecycle {
     create_before_destroy = true
   }
@@ -116,6 +117,7 @@ sudo mount -t efs -o tls,accesspoint=fsap-0260936da5df77892 fs-02cb949ac2d14929e
 sudo mount -t efs -o tls,accesspoint=fsap-07594c8a2608fff96 fs-02cb949ac2d14929e:/ /root
 sudo mount -t efs -o tls,accesspoint=fsap-07dbf8f712d763bee fs-07755a29a495cc8ca:/ /root/resources
 sudo mount -t efs -o tls,accesspoint=fsap-0988340d8fd1ccaf5 fs-07755a29a495cc8ca:/ /root/cello_results
+sudo mount -t efs -o tls,accesspoint=fsap-0764256c9ff5c4390 fs-076aa12fcc92c9066:/ /data
 EOF
 }
 
@@ -123,13 +125,13 @@ resource "aws_autoscaling_group" "nona_asg" {
   name                      = "nona-asg"
   launch_configuration      = aws_launch_configuration.nona_lc.name
   min_size                  = 3
-  max_size                  = 5
+  max_size                  = 4
   desired_capacity          = 4
   health_check_type         = "ELB"
   health_check_grace_period = 300
   vpc_zone_identifier       = module.vpc.public_subnets
 
-  target_group_arns     = [aws_lb_target_group.lb_target_group.arn, aws_lb_target_group.eugenelab_lb_target_group.arn, aws_lb_target_group.fpselection_lb_target_group.arn, aws_lb_target_group.minieugene_lb_target_group.arn, aws_lb_target_group.cellov1_lb_target_group.arn, aws_lb_target_group.clothov4_lb_target_group.arn, aws_lb_target_group.cellov2_lb_target_group.arn,]
+  target_group_arns     = [aws_lb_target_group.lb_target_group.arn, aws_lb_target_group.eugenelab_lb_target_group.arn, aws_lb_target_group.fpselection_lb_target_group.arn, aws_lb_target_group.minieugene_lb_target_group.arn, aws_lb_target_group.cellov1_lb_target_group.arn, aws_lb_target_group.clothov4_lb_target_group.arn, aws_lb_target_group.cellov2_lb_target_group.arn, aws_lb_target_group.knox_lb_target_group.arn]
   protect_from_scale_in = true
   lifecycle {
     create_before_destroy = true

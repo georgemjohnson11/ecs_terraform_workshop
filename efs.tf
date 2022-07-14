@@ -39,4 +39,18 @@ resource "aws_efs_mount_target" "nona_clothov4_mount" {
   subnet_id      = "subnet-052eecc33236879ab"
 }
 
+# knox
+resource "aws_efs_file_system" "knox_storage" {
+  creation_token = "nona_knox_efs"
+  encrypted = true
+  tags = {
+    Name = "ECS-EFS-knox"
+  }
+}
+
+resource "aws_efs_mount_target" "nona_knox_mount" {
+  file_system_id = aws_efs_file_system.knox_storage.id
+  subnet_id      = "subnet-052eecc33236879ab"
+}
+
 
