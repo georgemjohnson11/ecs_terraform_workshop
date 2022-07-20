@@ -1,11 +1,6 @@
 module "vpc" {
-<<<<<<< Updated upstream
-  source         = "terraform-aws-modules/vpc/aws"
-  version        = "2.38.0"
-=======
   source  = "terraform-aws-modules/vpc/aws"
   version = "3.14.2"
->>>>>>> Stashed changes
   name           = "test_ecs_provisioning"
   cidr           = "10.0.0.0/16"
   azs            = ["us-east-1a", "us-east-1b", "us-east-1c"]
@@ -15,13 +10,8 @@ module "vpc" {
   database_subnets = ["10.0.8.0/24", "10.0.9.0/24"]
   enable_nat_gateway = true
   tags = {
-<<<<<<< Updated upstream
-    "env"       = "dev"
-    "createdBy" = "mkerimova"
-=======
     "env"       = "production"
     "createdBy" = "gjohnson"
->>>>>>> Stashed changes
   }
 
 }
