@@ -10,8 +10,6 @@ terraform {
     key    = "state/terraform.tfstate"
     region = "us-east-1"
   }
-<<<<<<< Updated upstream
-=======
 }
 
 resource "aws_s3_bucket" "nona_tfstate" {

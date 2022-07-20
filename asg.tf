@@ -111,7 +111,6 @@ resource "aws_autoscaling_group" "nona_asg" {
   name                      = "nona-asg"
   launch_configuration      = aws_launch_configuration.nona_lc.name
   min_size                  = 2
->>>>>>> Stashed changes
   max_size                  = 4
   desired_capacity          = 3
   health_check_type         = "ELB"
