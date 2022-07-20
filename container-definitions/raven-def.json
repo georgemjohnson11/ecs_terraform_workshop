@@ -1,19 +1,19 @@
 [
     {
-      "name": "constellationjs-container",
-      "image": "464116869262.dkr.ecr.us-east-1.amazonaws.com/constellationjs:latest",
+      "name": "raven-container",
+      "image": "464116869262.dkr.ecr.us-east-1.amazonaws.com/raven:latest",
       "cpu": 10,
       "memory": 256,
       "essential": true,
       "portMappings": [
         {
-          "containerPort": 8082
+          "containerPort": 8080
         }
       ],
       "logConfiguration": {
         "logDriver": "awslogs",
         "options": { 
-          "awslogs-group" : "/ecs/frontend-container",
+          "awslogs-group" : "/ecs/raven-container",
           "awslogs-region": "us-east-1"
         }
       }

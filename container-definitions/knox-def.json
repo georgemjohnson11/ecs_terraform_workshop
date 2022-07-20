@@ -1,0 +1,79 @@
+[
+  {
+    "name": "knox-container",
+    "image": "464116869262.dkr.ecr.us-east-1.amazonaws.com/knox:latest",
+    "cpu": 500,
+    "memory": 300,
+    "essential": true,
+    "portMappings": [
+      {
+        "containerPort": 8080
+      }
+    ],
+    "mountPoints": [
+      {
+        "sourceVolume": "knox-storage",
+        "containerPath": "/data"
+      }
+    ],
+    "environment": [
+      {
+        "name": "spring.neo4j.uri",
+        "value": "neo4j+s://34c8e2f0.databases.neo4j.io"
+      },
+      {
+        "name": "spring.neo4j.authentication.username",
+        "value": "neo4j"
+      },
+      {
+        "name": "spring.neo4j.authentication.password",
+        "value": "hGqYuqAA0Tqkr-h27mO0qzfdZePLCyzqcUV-QGvTsio"
+      }
+    ],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "/ecs/knox-container",
+        "awslogs-region": "us-east-1"
+      }
+    }
+  },
+  {
+    "name": "knox-db",
+    "image": "neo4j:3.4.1-enterprise",
+    "cpu": 500,
+    "memory": 650,
+    "essential": true,
+    "portMappings": [
+      {
+        "containerPort": 7474
+      },
+      {
+        "containerPort": 7687
+      }
+    ],
+    "mountPoints": [
+      {
+        "sourceVolume": "knox-storage",
+        "containerPath": "/data"
+      }
+    ],
+    "environment": [
+      {
+        "name": "NEO4J_AUTH",
+        "value": "neo4j/hGqYuqAA0Tqkr-h27mO0qzfdZePLCyzqcUV-QGvTsio"
+      },
+      {
+        "name": "NEO4J_ACCEPT_LICENSE_AGREEMENT",
+        "value": "yes"
+      }
+    ],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "/ecs/knox-db-container",
+        "awslogs-region": "us-east-1"
+      }
+    }
+  }
+]

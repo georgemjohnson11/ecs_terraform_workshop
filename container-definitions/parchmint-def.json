@@ -1,0 +1,21 @@
+[
+    {
+      "name": "parchmint-container",
+      "image": "464116869262.dkr.ecr.us-east-1.amazonaws.com/parchmint:latest",
+      "cpu": 100,
+      "memory": 200,
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 8080
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": { 
+          "awslogs-group" : "/ecs/parchmint-container",
+          "awslogs-region": "us-east-1"
+        }
+      }
+    }
+]
