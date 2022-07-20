@@ -1,17 +1,17 @@
 provider "aws" {
   region  = "us-east-1"
-  version = "~> 2.63"
+  version = "~> 3.63"
 }
 
 
 terraform {
   backend "s3" {
-    bucket = "ecsworkshopbucket"
-    key    = "state/terraform.tfstate"
-    region = "us-east-1"
+    bucket      = "nona-tfstate"
+    key         = "state/terraform.tfstate"
+    kms_key_id  = "alias/nona_bucketstate_key"
+    encrypt     = true
+    region      = "us-east-1"
   }
-<<<<<<< Updated upstream
-=======
 }
 
 resource "aws_s3_bucket" "nona_tfstate" {
@@ -65,5 +65,4 @@ module "wordpress-ecs" {
   ecs_service_subnet_ids = module.vpc.private_subnets
   lb_subnet_ids = module.vpc.public_subnets
   db_subnet_group_subnet_ids = module.vpc.database_subnets
->>>>>>> Stashed changes
 }
