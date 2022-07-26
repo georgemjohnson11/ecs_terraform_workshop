@@ -1,0 +1,21 @@
+[
+  {
+    "name": "eugenelab-container",
+    "image": "464116869262.dkr.ecr.us-east-1.amazonaws.com/eugenerepo:latest",
+    "cpu": 200,
+    "memory": 500,
+    "essential": true,
+    "portMappings": [
+      {
+        "containerPort": 8080
+      }
+    ],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "/ecs/eugenelab-container",
+        "awslogs-region": "us-east-1"
+      }
+    }
+  }
+]

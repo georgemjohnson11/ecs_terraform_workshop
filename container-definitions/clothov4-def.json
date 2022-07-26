@@ -1,0 +1,44 @@
+[
+    {
+      "name": "clothov4-container",
+      "image": "464116869262.dkr.ecr.us-east-1.amazonaws.com/clothov4:production",
+      "cpu": 500,
+      "memory": 900,
+      "essential": true,
+      "portMappings": [
+        {
+          "hostPort": 9000,
+          "containerPort": 9000
+        },
+        {
+          "hostPort": 8000,
+          "containerPort": 8000
+        },
+        {
+          "hostPort": 27017,
+          "containerPort": 27017
+        },
+        {
+          "hostPort": 27016,
+          "containerPort": 27016
+        }
+      ],
+      "mountPoints": [
+        {
+          "sourceVolume": "clothov4-storage",
+          "containerPath": "/data/db"
+        },
+        {
+          "sourceVolume": "clothov4-storage",
+          "containerPath": "/root/resources"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": { 
+          "awslogs-group" : "/ecs/clothov4-container",
+          "awslogs-region": "us-east-1"
+        }
+      }
+    }
+]
