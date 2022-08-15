@@ -301,7 +301,7 @@ resource "aws_ecs_service" "cellov2_service" {
   name            = "cellov2-service"
   cluster         = aws_ecs_cluster.web-cluster.id
   task_definition = aws_ecs_task_definition.task-definition-cellov2.arn
-  desired_count   = 1
+  desired_count   = 2
   ordered_placement_strategy {
     type  = "binpack"
     field = "cpu"

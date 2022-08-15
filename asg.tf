@@ -63,12 +63,15 @@ sudo yum install -y amazon-efs-utils
 sudo mkdir -p /data/db
 sudo mkdir -p /root
 sudo mkdir -p /root/resources
+sudo mkdir -p /root/users
 sudo mkdir -p /root/cello_results
-sudo mount -t efs -o tls,accesspoint=fsap-0260936da5df77892 fs-02cb949ac2d14929e:/ /data/db
-sudo mount -t efs -o tls,accesspoint=fsap-07594c8a2608fff96 fs-02cb949ac2d14929e:/ /root
-sudo mount -t efs -o tls,accesspoint=fsap-07dbf8f712d763bee fs-07755a29a495cc8ca:/ /root/resources
-sudo mount -t efs -o tls,accesspoint=fsap-0988340d8fd1ccaf5 fs-07755a29a495cc8ca:/ /root/cello_results
-sudo mount -t efs -o tls,accesspoint=fsap-0764256c9ff5c4390 fs-076aa12fcc92c9066:/ /data
+sudo chmod -R 777 /root/
+sudo chmod -R 777 /data/
+sudo mount -t efs -o tls ${aws_efs_mount_target.nona_cellov2_mount_east_1b.mount_target_dns_name}:/ /
+sudo mount -t efs -o tls ${aws_efs_mount_target.nona_cellov1_mount_east_1a.mount_target_dns_name}:/ /
+sudo mount -t efs -o tls ${aws_efs_mount_target.nona_knox_mount_east_1a.mount_target_dns_name}:/ /
+sudo mount -t efs -o tls ${aws_efs_mount_target.nona_knox_mount_east_1b.mount_target_dns_name}:/ /
+
 EOF
 }
 
@@ -114,7 +117,8 @@ sudo mkdir -p /root
 sudo mkdir -p /root/resources
 sudo mkdir -p /root/cello_results
 sudo mount -t efs -o tls,accesspoint=fsap-0260936da5df77892 fs-02cb949ac2d14929e:/ /data/db
-sudo mount -t efs -o tls,accesspoint=fsap-07594c8a2608fff96 fs-02cb949ac2d14929e:/ /root
+sudo mount -t efs -o tls,accesspoint=fsap-00840bf8393821361 fs-02cb949ac2d14929e:/ /root/resources
+sudo mount -t efs -o tls,accesspoint=fsap-0c07a7987690a2d25 fs-02cb949ac2d14929e:/ /root/users
 sudo mount -t efs -o tls,accesspoint=fsap-07dbf8f712d763bee fs-07755a29a495cc8ca:/ /root/resources
 sudo mount -t efs -o tls,accesspoint=fsap-0988340d8fd1ccaf5 fs-07755a29a495cc8ca:/ /root/cello_results
 sudo mount -t efs -o tls,accesspoint=fsap-0764256c9ff5c4390 fs-076aa12fcc92c9066:/ /data
@@ -124,9 +128,9 @@ EOF
 resource "aws_autoscaling_group" "nona_asg" {
   name                      = "nona-asg"
   launch_configuration      = aws_launch_configuration.nona_lc.name
-  min_size                  = 3
-  max_size                  = 4
-  desired_capacity          = 4
+  min_size                  = 2
+  max_size                  = 3
+  desired_capacity          = 2
   health_check_type         = "ELB"
   health_check_grace_period = 300
   vpc_zone_identifier       = module.vpc.public_subnets

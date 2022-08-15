@@ -248,6 +248,7 @@ resource "aws_lb" "cellov2-lb" {
   name               = "cellov2"
   load_balancer_type = "application"
   internal           = false
+  idle_timeout       = 1800
   subnets            = module.vpc.public_subnets
   tags = {
     "env"       = "prod"
@@ -287,6 +288,7 @@ resource "aws_lb" "cellov1-lb" {
   name               = "cellov1"
   load_balancer_type = "application"
   internal           = false
+  idle_timeout       = 600
   subnets            = module.vpc.public_subnets
   tags = {
     "env"       = "prod"
