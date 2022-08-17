@@ -69,8 +69,6 @@ sudo chmod -R 777 /root/
 sudo chmod -R 777 /data/
 sudo mount -t efs -o tls ${aws_efs_mount_target.nona_cellov2_mount_east_1b.mount_target_dns_name}:/ /
 sudo mount -t efs -o tls ${aws_efs_mount_target.nona_cellov1_mount_east_1a.mount_target_dns_name}:/ /
-sudo mount -t efs -o tls ${aws_efs_mount_target.nona_knox_mount_east_1a.mount_target_dns_name}:/ /
-sudo mount -t efs -o tls ${aws_efs_mount_target.nona_knox_mount_east_1b.mount_target_dns_name}:/ /
 
 EOF
 }
@@ -135,7 +133,7 @@ resource "aws_autoscaling_group" "nona_asg" {
   health_check_grace_period = 300
   vpc_zone_identifier       = module.vpc.public_subnets
 
-  target_group_arns     = [aws_lb_target_group.lb_target_group.arn, aws_lb_target_group.eugenelab_lb_target_group.arn, aws_lb_target_group.fpselection_lb_target_group.arn, aws_lb_target_group.minieugene_lb_target_group.arn, aws_lb_target_group.cellov1_lb_target_group.arn, aws_lb_target_group.clothov4_lb_target_group.arn, aws_lb_target_group.cellov2_lb_target_group.arn, aws_lb_target_group.knox_lb_target_group.arn]
+  target_group_arns     = [aws_lb_target_group.lb_target_group.arn, aws_lb_target_group.eugenelab_lb_target_group.arn, aws_lb_target_group.fpselection_lb_target_group.arn, aws_lb_target_group.minieugene_lb_target_group.arn, aws_lb_target_group.cellov1_lb_target_group.arn, aws_lb_target_group.clothov4_lb_target_group.arn, aws_lb_target_group.cellov2_lb_target_group.arn, aws_lb_target_group.neptune_lb_target_group.arn]
   protect_from_scale_in = true
   lifecycle {
     create_before_destroy = true

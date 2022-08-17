@@ -9,12 +9,17 @@ This is the example of creating an open source infrastructure using Terraform an
 - Elastic File System (EFS)
 
 
+Some guidelines:
 An overview can be found on Youtube of the above infrastructure [here](https://youtu.be/Ky7sph6fBtM?t=881)
+We host everything in us-east-1 until funding can have global replicas
+We automate everything where possible
+
 ## Prerequisites
+Download and Install [Terraform](https://www.terraform.io/downloads)
 Create SSH Keys in AWS (pem files to access servers)
 Install Terraform
 Install the AWS CLI
-Create appropriate roles to access AWS rresources
+Create appropriate roles to access AWS resources
 ## How to create the infrastructure?
 This example implies that you have already AWS account and [Terraform CLI](https://www.terraform.io/downloads) installed.
 1. `git clone https://github.com/NonaSoftware/terraform_ecs_infrastructure.git`
@@ -52,5 +57,10 @@ Note: in order to enable ECS managed scaling you need to enable `protect from sc
 In file `iam.tf` we create roles, which will help us to associate EC2 instances to clusters, and other tasks.
 
 In file `alb.tf` we create Application Load Balancer with target groups, security group and listener. 
+
+In file `s3.tf` we create some buckets that are needed by applications. The terraform state bucket is in the `main.tf` file.
+
+
+In file `db.tf` we create redis and other database applications
 
 TODO: Setup EFS mount incoming security group to be the ECS cluster security group

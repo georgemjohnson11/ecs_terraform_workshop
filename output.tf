@@ -30,8 +30,8 @@ output "clothov4_dns" {
   value = aws_lb.clothov4-lb.dns_name
 }
 
-output "knox_dns" {
-  value = aws_lb.knox-lb.dns_name
+output "neptune_dns" {
+  value = aws_lb.neptune-lb.dns_name
 }
 
 output "vpc_id" {

@@ -126,32 +126,3 @@ resource "aws_efs_file_system" "knox_storage" {
     Name = "ECS-EFS-knox"
   }
 }
-
-resource "aws_efs_mount_target" "nona_knox_mount_east_1a" {
-  file_system_id = aws_efs_file_system.knox_storage.id
-  subnet_id      = "subnet-0d7d847bd9e4c7e00"
-}
-
-resource "aws_efs_mount_target" "nona_knox_mount_east_1b" {
-  file_system_id = aws_efs_file_system.knox_storage.id
-  subnet_id      = "subnet-0fdce4f93f8473f67"
-}
-
-resource "aws_efs_access_point" "access-nona_knox_mount_east" {
-  file_system_id = aws_efs_file_system.knox_storage.id
-
-  posix_user {
-    gid = 1000
-    uid = 1000
-  }
-
-  root_directory {
-    path = "/"
-    creation_info {
-      owner_gid   = 1000
-      owner_uid   = 1000
-      permissions = "0777"
-    }
-  }
-}
-

@@ -345,27 +345,27 @@ resource "aws_ecs_task_definition" "task-definition-clothov4" {
   }
 }
 
-resource "aws_ecs_service" "clothov4_service" {
-  name            = "clothov4-service"
-  cluster         = aws_ecs_cluster.web-cluster.id
-  task_definition = aws_ecs_task_definition.task-definition-clothov4.arn
-  desired_count   = 1
-  ordered_placement_strategy {
-    type  = "binpack"
-    field = "cpu"
-  }
-  load_balancer {
-    target_group_arn = "${aws_lb_target_group.clothov4_lb_target_group.arn}"
-    container_name   = "clothov4-container"
-    container_port   = 9000
-  }
-  # Optional: Allow external changes without Terraform plan difference(for example ASG)
-  lifecycle {
-    ignore_changes = [desired_count]
-  }
-  launch_type = "EC2"
-  depends_on  = [aws_lb_listener.clothov4-secure-listener]
-}
+# resource "aws_ecs_service" "clothov4_service" {
+#   name            = "clothov4-service"
+#   cluster         = aws_ecs_cluster.web-cluster.id
+#   task_definition = aws_ecs_task_definition.task-definition-clothov4.arn
+#   desired_count   = 1
+#   ordered_placement_strategy {
+#     type  = "binpack"
+#     field = "cpu"
+#   }
+#   load_balancer {
+#     target_group_arn = "${aws_lb_target_group.clothov4_lb_target_group.arn}"
+#     container_name   = "clothov4-container"
+#     container_port   = 9000
+#   }
+#   # Optional: Allow external changes without Terraform plan difference(for example ASG)
+#   lifecycle {
+#     ignore_changes = [desired_count]
+#   }
+#   launch_type = "EC2"
+#   depends_on  = [aws_lb_listener.clothov4-secure-listener]
+# }
 
 resource "aws_cloudwatch_log_group" "clothov4_log_group" {
   name = "/ecs/clothov4-container"
@@ -375,17 +375,11 @@ resource "aws_cloudwatch_log_group" "clothov4_log_group" {
   }
 }
 
-# knox
-resource "aws_ecs_task_definition" "task-definition-knox" {
-  family                = "knox"
-  container_definitions = file("container-definitions/knox-def.json")
-  volume {
-    name      = "knox-storage"
-    efs_volume_configuration {
-      file_system_id = aws_efs_file_system.knox_storage.id
-      root_directory = "/"
-    }
-  }
+
+# neptune
+resource "aws_ecs_task_definition" "task-definition-neptune" {
+  family                = "neptune"
+  container_definitions = file("container-definitions/neptune-def.json")
   network_mode          = "bridge"
   tags = {
     "env"       = "prod"
@@ -393,18 +387,18 @@ resource "aws_ecs_task_definition" "task-definition-knox" {
   }
 }
 
-resource "aws_ecs_service" "knox_service" {
-  name            = "knox-service"
+resource "aws_ecs_service" "neptune_service" {
+  name            = "neptune-service"
   cluster         = aws_ecs_cluster.web-cluster.id
-  task_definition = aws_ecs_task_definition.task-definition-knox.arn
+  task_definition = aws_ecs_task_definition.task-definition-neptune.arn
   desired_count   = 1
   ordered_placement_strategy {
     type  = "binpack"
     field = "cpu"
   }
   load_balancer {
-    target_group_arn = "${aws_lb_target_group.knox_lb_target_group.arn}"
-    container_name   = "knox-container"
+    target_group_arn = "${aws_lb_target_group.neptune_lb_target_group.arn}"
+    container_name   = "neptune-container"
     container_port   = 8080
   }
   # Optional: Allow external changes without Terraform plan difference(for example ASG)
@@ -412,11 +406,11 @@ resource "aws_ecs_service" "knox_service" {
     ignore_changes = [desired_count]
   }
   launch_type = "EC2"
-  depends_on  = [aws_lb_listener.knox-secure-listener]
+  depends_on  = [aws_lb_listener.neptune-secure-listener]
 }
 
-resource "aws_cloudwatch_log_group" "knox_log_group" {
-  name = "/ecs/knox-container"
+resource "aws_cloudwatch_log_group" "neptune_log_group" {
+  name = "/ecs/neptune-container"
   tags = {
     "env"       = "prod"
     "createdBy" = "gjohnson"

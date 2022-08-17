@@ -437,9 +437,9 @@ resource "aws_lb_listener" "clothov4-smtp-listener" {
 }
 
 
-# knox 
-resource "aws_lb" "knox-lb" {
-  name               = "knox"
+# neptune 
+resource "aws_lb" "neptune-lb" {
+  name               = "neptune"
   load_balancer_type = "application"
   internal           = false
   subnets            = module.vpc.public_subnets
@@ -450,8 +450,8 @@ resource "aws_lb" "knox-lb" {
   security_groups = [aws_security_group.lb.id]
 }
 
-resource "aws_lb_target_group" "knox_lb_target_group" {
-  name        = "knox-target-group"
+resource "aws_lb_target_group" "neptune_lb_target_group" {
+  name        = "neptune-target-group"
   port        = "8080"
   protocol    = "HTTP"
   target_type = "instance"
@@ -466,9 +466,9 @@ resource "aws_lb_target_group" "knox_lb_target_group" {
   }
 }
 
-resource "aws_lb_target_group" "knox_lb_db_target_group" {
-  name        = "knox-db-target-group"
-  port        = "7474"
+resource "aws_lb_target_group" "neptune_lb_3duf_target_group" {
+  name        = "neptune-3duf-target-group"
+  port        = "5555"
   protocol    = "HTTP"
   target_type = "instance"
   vpc_id      = data.aws_vpc.main.id
@@ -482,48 +482,22 @@ resource "aws_lb_target_group" "knox_lb_db_target_group" {
   }
 }
 
-resource "aws_lb_target_group" "knox_lb_bolt_target_group" {
-  name        = "knox-bolt-target-group"
-  port        = "7687"
-  protocol    = "HTTP"
-  target_type = "instance"
-  vpc_id      = data.aws_vpc.main.id
-  health_check {
-    path                = "/"
-    healthy_threshold   = 2
-    unhealthy_threshold = 10
-    timeout             = 60
-    interval            = 300
-    matcher             = "200,301,302"
-  }
-}
-
-resource "aws_lb_listener" "knox-secure-listener" {
-  load_balancer_arn = aws_lb.knox-lb.arn
+resource "aws_lb_listener" "neptune-secure-listener" {
+  load_balancer_arn = aws_lb.neptune-lb.arn
   port              = "80"
   protocol          = "HTTP"
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.knox_lb_target_group.arn
+    target_group_arn = aws_lb_target_group.neptune_lb_target_group.arn
   }
 }
 
-resource "aws_lb_listener" "knox-db-listener" {
-  load_balancer_arn = aws_lb.knox-lb.arn
-  port              = "7474"
+resource "aws_lb_listener" "neptune-redis-listener" {
+  load_balancer_arn = aws_lb.neptune-lb.arn
+  port              = "3000"
   protocol          = "HTTP"
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.knox_lb_db_target_group.arn
-  }
-}
-
-resource "aws_lb_listener" "knox-bolt-listener" {
-  load_balancer_arn = aws_lb.knox-lb.arn
-  port              = "7687"
-  protocol          = "HTTP"
-  default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.knox_lb_bolt_target_group.arn
+    target_group_arn = aws_lb_target_group.neptune_lb_target_group.arn
   }
 }
