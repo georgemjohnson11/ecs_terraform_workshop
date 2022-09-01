@@ -34,6 +34,10 @@ output "neptune_dns" {
   value = aws_lb.neptune-lb.dns_name
 }
 
+output "puppeteer_dns" {
+  value = aws_lb.puppeteer-lb.dns_name
+}
+
 output "vpc_id" {
   value = module.vpc.vpc_id
 }

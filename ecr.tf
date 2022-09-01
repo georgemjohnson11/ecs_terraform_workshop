@@ -457,3 +457,39 @@ resource "aws_ecr_lifecycle_policy" "knox_repo_policy" {
 }
 EOF
 }
+
+
+resource "aws_ecr_repository" "puppeteer_repo" {
+  name                 = "puppeteer"
+  image_tag_mutability = "MUTABLE"
+  image_scanning_configuration {
+    scan_on_push = true
+  }
+  tags = {
+    "env"       = "prod"
+    "createdBy" = "gjohnson"
+  }
+}
+
+resource "aws_ecr_lifecycle_policy" "puppeteer_repo_policy" {
+  repository = aws_ecr_repository.puppeteer_repo.name
+  policy     = <<EOF
+{
+    "rules": [
+        {
+            "rulePriority": 1,
+            "description": "Expire images older than 700 days",
+            "selection": {
+                "tagStatus": "any",
+                "countType": "sinceImagePushed",
+                "countUnit": "days",
+                "countNumber": 700
+            },
+            "action": {
+                "type": "expire"
+            }
+        }
+    ]
+}
+EOF
+}

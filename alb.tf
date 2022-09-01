@@ -436,6 +436,96 @@ resource "aws_lb_listener" "clothov4-smtp-listener" {
   }
 }
 
+# knox 
+resource "aws_lb" "knox-lb" {
+  name               = "knox"
+  load_balancer_type = "application"
+  internal           = false
+  subnets            = module.vpc.public_subnets
+  tags = {
+    "env"       = "prod"
+    "createdBy" = "gjohnson"
+  }
+  security_groups = [aws_security_group.lb.id]
+}
+
+resource "aws_lb_target_group" "knox_lb_target_group" {
+  name        = "knox-target-group"
+  port        = "8080"
+  protocol    = "HTTP"
+  target_type = "instance"
+  vpc_id      = data.aws_vpc.main.id
+  health_check {
+    path                = "/"
+    healthy_threshold   = 2
+    unhealthy_threshold = 10
+    timeout             = 60
+    interval            = 300
+    matcher             = "200,301,302"
+  }
+}
+
+resource "aws_lb_target_group" "knox_lb_db_target_group" {
+  name        = "knox-db-target-group"
+  port        = "7474"
+  protocol    = "HTTP"
+  target_type = "instance"
+  vpc_id      = data.aws_vpc.main.id
+  health_check {
+    path                = "/"
+    healthy_threshold   = 2
+    unhealthy_threshold = 10
+    timeout             = 60
+    interval            = 300
+    matcher             = "200,301,302"
+  }
+}
+
+resource "aws_lb_target_group" "knox_lb_bolt_target_group" {
+  name        = "knox-bolt-target-group"
+  port        = "7687"
+  protocol    = "HTTP"
+  target_type = "instance"
+  vpc_id      = data.aws_vpc.main.id
+  health_check {
+    path                = "/"
+    healthy_threshold   = 2
+    unhealthy_threshold = 10
+    timeout             = 60
+    interval            = 300
+    matcher             = "200,301,302"
+  }
+}
+
+resource "aws_lb_listener" "knox-secure-listener" {
+  load_balancer_arn = aws_lb.knox-lb.arn
+  port              = "80"
+  protocol          = "HTTP"
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.knox_lb_target_group.arn
+  }
+}
+
+resource "aws_lb_listener" "knox-db-listener" {
+  load_balancer_arn = aws_lb.knox-lb.arn
+  port              = "7474"
+  protocol          = "HTTP"
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.knox_lb_db_target_group.arn
+  }
+}
+
+resource "aws_lb_listener" "knox-bolt-listener" {
+  load_balancer_arn = aws_lb.knox-lb.arn
+  port              = "7687"
+  protocol          = "HTTP"
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.knox_lb_bolt_target_group.arn
+  }
+}
 
 # neptune 
 resource "aws_lb" "neptune-lb" {
@@ -499,5 +589,44 @@ resource "aws_lb_listener" "neptune-redis-listener" {
   default_action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.neptune_lb_target_group.arn
+  }
+}
+
+# puppeteer 
+resource "aws_lb" "puppeteer-lb" {
+  name               = "puppeteer"
+  load_balancer_type = "application"
+  internal           = false
+  subnets            = module.vpc.public_subnets
+  tags = {
+    "env"       = "prod"
+    "createdBy" = "gjohnson"
+  }
+  security_groups = [aws_security_group.lb.id]
+}
+
+resource "aws_lb_target_group" "puppeteer_lb_target_group" {
+  name        = "puppeteer-target-group"
+  port        = "8080"
+  protocol    = "HTTP"
+  target_type = "instance"
+  vpc_id      = data.aws_vpc.main.id
+  health_check {
+    path                = "/"
+    healthy_threshold   = 2
+    unhealthy_threshold = 10
+    timeout             = 60
+    interval            = 300
+    matcher             = "200,301,302"
+  }
+}
+
+resource "aws_lb_listener" "puppeteer-secure-listener" {
+  load_balancer_arn = aws_lb.puppeteer-lb.arn
+  port              = "80"
+  protocol          = "HTTP"
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.puppeteer_lb_target_group.arn
   }
 }

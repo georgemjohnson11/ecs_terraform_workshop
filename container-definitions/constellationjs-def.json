@@ -13,7 +13,7 @@
       "logConfiguration": {
         "logDriver": "awslogs",
         "options": { 
-          "awslogs-group" : "/ecs/frontend-container",
+          "awslogs-group" : "/ecs/constellationjs-container",
           "awslogs-region": "us-east-1"
         }
       }

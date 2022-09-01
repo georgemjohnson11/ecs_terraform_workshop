@@ -1,0 +1,40 @@
+[
+  {
+    "name": "puppeteer-api-container",
+    "image": "464116869262.dkr.ecr.us-east-1.amazonaws.com/puppeteer:api",
+    "cpu": 300,
+    "memory": 500,
+    "essential": true,
+    "portMappings": [
+      {
+        "containerPort": 8000
+      }
+    ],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "/ecs/minieugene-container",
+        "awslogs-region": "us-east-1"
+      }
+    }
+  },
+  {
+    "name": "puppeteer-container",
+    "image": "464116869262.dkr.ecr.us-east-1.amazonaws.com/puppeteer:latest",
+    "cpu": 100,
+    "memory": 100,
+    "essential": true,
+    "portMappings": [
+      {
+        "containerPort": 8080
+      }
+    ],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "/ecs/minieugene-container",
+        "awslogs-region": "us-east-1"
+      }
+    }
+  }
+]

@@ -1,14 +1,14 @@
 resource "aws_ecs_cluster" "web-cluster" {
   name               = var.cluster_name
-  capacity_providers = [aws_ecs_capacity_provider.test.name]
+  capacity_providers = [aws_ecs_capacity_provider.nona_ecs_provider.name]
   tags = {
     "env"       = "prod"
     "createdBy" = "gjohnson"
   }
 }
 
-resource "aws_ecs_capacity_provider" "test" {
-  name = "capacity-provider-test"
+resource "aws_ecs_capacity_provider" "nona_ecs_provider" {
+  name = "capacity-provider-nona"
   auto_scaling_group_provider {
     auto_scaling_group_arn         = aws_autoscaling_group.nona_asg.arn
     managed_termination_protection = "ENABLED"
@@ -24,9 +24,9 @@ resource "aws_ecs_capacity_provider" "test" {
 # Containers and definitions
 
 # update file container-def, so it's pulling image from ecr
-resource "aws_ecs_task_definition" "task-definition-test" {
-  family                = "web-family"
-  container_definitions = file("container-definitions/container-def.json")
+resource "aws_ecs_task_definition" "task-definition-constellationjs" {
+  family                = "constellationjs"
+  container_definitions = file("container-definitions/constellationjs-def.json")
   network_mode          = "bridge"
   tags = {
     "env"       = "prod"
@@ -34,10 +34,10 @@ resource "aws_ecs_task_definition" "task-definition-test" {
   }
 }
 
-resource "aws_ecs_service" "service" {
-  name            = "web-service"
+resource "aws_ecs_service" "constellationjs" {
+  name            = "constellationjs-service"
   cluster         = aws_ecs_cluster.web-cluster.id
-  task_definition = aws_ecs_task_definition.task-definition-test.arn
+  task_definition = aws_ecs_task_definition.task-definition-constellationjs.arn
   desired_count   = 1
   ordered_placement_strategy {
     type  = "binpack"
@@ -301,7 +301,7 @@ resource "aws_ecs_service" "cellov2_service" {
   name            = "cellov2-service"
   cluster         = aws_ecs_cluster.web-cluster.id
   task_definition = aws_ecs_task_definition.task-definition-cellov2.arn
-  desired_count   = 2
+  desired_count   = 1
   ordered_placement_strategy {
     type  = "binpack"
     field = "cpu"
@@ -345,27 +345,27 @@ resource "aws_ecs_task_definition" "task-definition-clothov4" {
   }
 }
 
-# resource "aws_ecs_service" "clothov4_service" {
-#   name            = "clothov4-service"
-#   cluster         = aws_ecs_cluster.web-cluster.id
-#   task_definition = aws_ecs_task_definition.task-definition-clothov4.arn
-#   desired_count   = 1
-#   ordered_placement_strategy {
-#     type  = "binpack"
-#     field = "cpu"
-#   }
-#   load_balancer {
-#     target_group_arn = "${aws_lb_target_group.clothov4_lb_target_group.arn}"
-#     container_name   = "clothov4-container"
-#     container_port   = 9000
-#   }
-#   # Optional: Allow external changes without Terraform plan difference(for example ASG)
-#   lifecycle {
-#     ignore_changes = [desired_count]
-#   }
-#   launch_type = "EC2"
-#   depends_on  = [aws_lb_listener.clothov4-secure-listener]
-# }
+resource "aws_ecs_service" "clothov4_service" {
+  name            = "clothov4-service"
+  cluster         = aws_ecs_cluster.web-cluster.id
+  task_definition = aws_ecs_task_definition.task-definition-clothov4.arn
+  desired_count   = 0
+  ordered_placement_strategy {
+    type  = "binpack"
+    field = "cpu"
+  }
+  load_balancer {
+    target_group_arn = "${aws_lb_target_group.clothov4_lb_target_group.arn}"
+    container_name   = "clothov4-container"
+    container_port   = 9000
+  }
+  # Optional: Allow external changes without Terraform plan difference(for example ASG)
+  lifecycle {
+    ignore_changes = [desired_count]
+  }
+  launch_type = "EC2"
+  depends_on  = [aws_lb_listener.clothov4-secure-listener]
+}
 
 resource "aws_cloudwatch_log_group" "clothov4_log_group" {
   name = "/ecs/clothov4-container"
@@ -391,7 +391,7 @@ resource "aws_ecs_service" "neptune_service" {
   name            = "neptune-service"
   cluster         = aws_ecs_cluster.web-cluster.id
   task_definition = aws_ecs_task_definition.task-definition-neptune.arn
-  desired_count   = 1
+  desired_count   = 0
   ordered_placement_strategy {
     type  = "binpack"
     field = "cpu"
@@ -417,3 +417,91 @@ resource "aws_cloudwatch_log_group" "neptune_log_group" {
   }
 }
 
+# knox
+resource "aws_ecs_task_definition" "task-definition-knox" {
+  family                = "knox"
+  container_definitions = file("container-definitions/knox-def.json")
+  volume {
+    name      = "knox-storage"
+    efs_volume_configuration {
+      file_system_id = aws_efs_file_system.knox_storage.id
+      root_directory = "/"
+    }
+  }
+  network_mode          = "bridge"
+  tags = {
+    "env"       = "prod"
+    "createdBy" = "gjohnson"
+  }
+}
+
+resource "aws_ecs_service" "knox_service" {
+  name            = "knox-service"
+  cluster         = aws_ecs_cluster.web-cluster.id
+  task_definition = aws_ecs_task_definition.task-definition-knox.arn
+  desired_count   = 0
+  ordered_placement_strategy {
+    type  = "binpack"
+    field = "cpu"
+  }
+  load_balancer {
+    target_group_arn = "${aws_lb_target_group.knox_lb_target_group.arn}"
+    container_name   = "knox-container"
+    container_port   = 8080
+  }
+  # Optional: Allow external changes without Terraform plan difference(for example ASG)
+  lifecycle {
+    ignore_changes = [desired_count]
+  }
+  launch_type = "EC2"
+  depends_on  = [aws_lb_listener.knox-secure-listener]
+}
+
+resource "aws_cloudwatch_log_group" "knox_log_group" {
+  name = "/ecs/knox-container"
+  tags = {
+    "env"       = "prod"
+    "createdBy" = "gjohnson"
+  }
+}
+
+# puppeteer
+resource "aws_ecs_task_definition" "task-definition-puppeteer" {
+  family                = "puppeteer"
+  container_definitions = file("container-definitions/puppeteer-def.json")
+  network_mode          = "bridge"
+  tags = {
+    "env"       = "prod"
+    "createdBy" = "gjohnson"
+  }
+}
+
+resource "aws_ecs_service" "puppeteer_service" {
+  name            = "puppeteer-service"
+  cluster         = aws_ecs_cluster.web-cluster.id
+  task_definition = aws_ecs_task_definition.task-definition-puppeteer.arn
+  desired_count   = 0
+  ordered_placement_strategy {
+    type  = "binpack"
+    field = "cpu"
+  }
+  load_balancer {
+    target_group_arn = "${aws_lb_target_group.puppeteer_lb_target_group.arn}"
+    container_name   = "puppeteer-container"
+    container_port   = 8080
+  }
+  # Optional: Allow external changes without Terraform plan difference(for example ASG)
+  lifecycle {
+    ignore_changes = [desired_count]
+  }
+  launch_type = "EC2"
+  depends_on  = [aws_lb_listener.puppeteer-secure-listener]
+}
+
+resource "aws_cloudwatch_log_group" "puppeteer_log_group" {
+  name = "/ecs/puppeteer-container"
+  tags = {
+    "env"       = "prod"
+    "createdBy" = "gjohnson"
+  }
+}
